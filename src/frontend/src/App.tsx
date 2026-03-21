@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import InstallPrompt from "./components/InstallPrompt";
 import { useActor } from "./hooks/useActor";
 import HomePage from "./pages/HomePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
@@ -72,6 +73,7 @@ function AppInner() {
       {view.screen === "leaderboard" && (
         <LeaderboardPage onBack={() => setView({ screen: "home" })} />
       )}
+      <InstallPrompt />
     </>
   );
 }

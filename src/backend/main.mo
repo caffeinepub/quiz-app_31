@@ -6,10 +6,10 @@ import Runtime "mo:core/Runtime";
 import Order "mo:core/Order";
 import Time "mo:core/Time";
 import List "mo:core/List";
-import Migration "migration";
+
 import Int "mo:core/Int";
 
-(with migration = Migration.run)
+
 actor {
   type Category = {
     id : Text;
