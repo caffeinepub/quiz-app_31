@@ -3,70 +3,158 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "Figtree";
-  src: url("/assets/fonts/Figtree.woff2") format("woff2");
-  font-weight: 300 900;
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/assets/fonts/JetBrainsMono.woff2") format("woff2");
+  font-weight: 300 700;
   font-style: normal;
   font-display: swap;
 }
 
 @layer base {
   :root {
-    --radius: 1rem;
-    /* Primary teal #169AA3 */
-    --primary: 0.62 0.1 197;
-    --primary-foreground: 1 0 0;
-    /* Hero bg #D9F2F6 */
-    --hero-bg: 0.94 0.04 197;
-    /* Page bg #F5F7F9 */
-    --background: 0.97 0.005 240;
-    --foreground: 0.18 0.015 264;
-    --card: 1 0 0;
-    --card-foreground: 0.18 0.015 264;
-    --popover: 1 0 0;
-    --popover-foreground: 0.18 0.015 264;
-    --secondary: 0.97 0.005 240;
-    --secondary-foreground: 0.18 0.015 264;
-    --muted: 0.95 0.005 240;
-    --muted-foreground: 0.52 0.015 264;
-    --accent: 0.94 0.04 197;
-    --accent-foreground: 0.18 0.015 264;
-    --destructive: 0.48 0.12 15;
-    --destructive-foreground: 1 0 0;
-    --border: 0.92 0.005 240;
-    --input: 0.92 0.005 240;
-    --ring: 0.62 0.1 197;
-    /* Feedback states */
-    --correct: 0.68 0.15 148;
-    --correct-foreground: 1 0 0;
-    --incorrect-bg: 0.94 0.04 15;
-    --incorrect-text: 0.48 0.12 15;
-    /* Category card colors */
-    --cat-cyan: 0.75 0.1 210;
-    --cat-ice: 0.93 0.01 240;
-    --cat-orange: 0.72 0.13 55;
-    --cat-yellow: 0.88 0.13 85;
-    --cat-mint: 0.84 0.1 155;
-    --cat-green: 0.78 0.13 145;
-    --chart-1: 0.646 0.222 41.116;
-    --chart-2: 0.6 0.118 184.704;
-    --chart-3: 0.398 0.07 227.392;
-    --chart-4: 0.828 0.189 84.429;
-    --chart-5: 0.769 0.188 70.08;
-    --sidebar: 1 0 0;
-    --sidebar-foreground: 0.18 0.015 264;
-    --sidebar-primary: 0.62 0.1 197;
-    --sidebar-primary-foreground: 1 0 0;
-    --sidebar-accent: 0.97 0.005 240;
-    --sidebar-accent-foreground: 0.18 0.015 264;
-    --sidebar-border: 0.92 0.005 240;
-    --sidebar-ring: 0.62 0.1 197;
+    --radius: 0.75rem;
+
+    /* === Option Traders Dark Palette === */
+    /* Page bg #0B0F14 */
+    --background: 0.1 0.018 240;
+    /* Cards #151F2B */
+    --card: 0.15 0.026 240;
+    --card-foreground: 0.94 0.012 240;
+    /* Popovers */
+    --popover: 0.15 0.026 240;
+    --popover-foreground: 0.94 0.012 240;
+    /* Primary text #E6EEF7 */
+    --foreground: 0.94 0.012 240;
+    /* Muted panel */
+    --muted: 0.2 0.03 240;
+    --muted-foreground: 0.65 0.025 240;
+    /* Border #223142 */
+    --border: 0.24 0.038 240;
+    --input: 0.24 0.038 240;
+    /* Primary teal #22C3B5 */
+    --primary: 0.72 0.12 185;
+    --primary-foreground: 0.1 0.018 240;
+    /* Secondary panel #121A24 */
+    --secondary: 0.18 0.028 240;
+    --secondary-foreground: 0.94 0.012 240;
+    /* Accent */
+    --accent: 0.22 0.032 240;
+    --accent-foreground: 0.94 0.012 240;
+    /* Destructive / SELL red #E74C3C */
+    --destructive: 0.58 0.22 25;
+    --destructive-foreground: 0.97 0.005 240;
+    /* Ring */
+    --ring: 0.72 0.12 185;
+    /* Success / BUY green #2ECC71 */
+    --success: 0.72 0.18 148;
+    --success-foreground: 0.1 0.018 240;
+    /* Warning / Neutral amber #F39C12 */
+    --warning: 0.78 0.17 70;
+    --warning-foreground: 0.1 0.018 240;
+    /* Teal aliases */
+    --buy: 0.72 0.18 148;
+    --buy-foreground: 0.97 0.005 240;
+    --sell: 0.58 0.22 25;
+    --sell-foreground: 0.97 0.005 240;
+
+    /* Charts */
+    --chart-1: 0.72 0.12 185;
+    --chart-2: 0.72 0.18 148;
+    --chart-3: 0.58 0.22 25;
+    --chart-4: 0.78 0.17 70;
+    --chart-5: 0.6 0.18 260;
+
+    /* Sidebar slightly lighter than bg */
+    --sidebar: 0.13 0.022 240;
+    --sidebar-foreground: 0.94 0.012 240;
+    --sidebar-primary: 0.72 0.12 185;
+    --sidebar-primary-foreground: 0.1 0.018 240;
+    --sidebar-accent: 0.2 0.03 240;
+    --sidebar-accent-foreground: 0.94 0.012 240;
+    --sidebar-border: 0.24 0.038 240;
+    --sidebar-ring: 0.72 0.12 185;
   }
 
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground font-body;
+    font-feature-settings: "tnum" 1;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: oklch(0.1 0.018 240);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.28 0.038 240);
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.38 0.048 240);
+  }
+
+  /* Pulse animation for live indicator */
+  @keyframes live-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+  .live-dot {
+    animation: live-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes price-flash-green {
+    0% {
+      background-color: oklch(0.72 0.18 148 / 0.25);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+  @keyframes price-flash-red {
+    0% {
+      background-color: oklch(0.58 0.22 25 / 0.25);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+  .flash-green {
+    animation: price-flash-green 0.6s ease-out;
+  }
+  .flash-red {
+    animation: price-flash-red 0.6s ease-out;
+  }
+
+  @keyframes ticker-scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  .ticker-animate {
+    animation: ticker-scroll 30s linear infinite;
   }
 }

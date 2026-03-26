@@ -10,14 +10,13 @@ export default {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      screens: { "2xl": "1400px" },
     },
     extend: {
       fontFamily: {
-        body: ["Figtree", "system-ui", "sans-serif"],
-        display: ["Figtree", "system-ui", "sans-serif"],
+        body: ["Satoshi", "system-ui", "sans-serif"],
+        display: ["Satoshi", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "Menlo", "monospace"],
       },
       colors: {
         border: "oklch(var(--border))",
@@ -53,9 +52,21 @@ export default {
           DEFAULT: "oklch(var(--card))",
           foreground: "oklch(var(--card-foreground))",
         },
-        correct: {
-          DEFAULT: "oklch(var(--correct))",
-          foreground: "oklch(var(--correct-foreground))",
+        success: {
+          DEFAULT: "oklch(var(--success) / <alpha-value>)",
+          foreground: "oklch(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "oklch(var(--warning) / <alpha-value>)",
+          foreground: "oklch(var(--warning-foreground))",
+        },
+        buy: {
+          DEFAULT: "oklch(var(--buy) / <alpha-value>)",
+          foreground: "oklch(var(--buy-foreground))",
+        },
+        sell: {
+          DEFAULT: "oklch(var(--sell) / <alpha-value>)",
+          foreground: "oklch(var(--sell-foreground))",
         },
         chart: {
           1: "oklch(var(--chart-1))",
@@ -82,9 +93,10 @@ export default {
         full: "9999px",
       },
       boxShadow: {
-        xs: "0 1px 2px 0 rgba(0,0,0,0.05)",
-        card: "0 4px 24px 0 rgba(22,154,163,0.08), 0 1px 4px 0 rgba(0,0,0,0.04)",
-        header: "0 2px 8px 0 rgba(0,0,0,0.06)",
+        card: "0 2px 16px 0 rgba(0,0,0,0.5)",
+        glow: "0 0 20px oklch(0.72 0.12 185 / 0.25)",
+        "glow-green": "0 0 16px oklch(0.72 0.18 148 / 0.3)",
+        "glow-red": "0 0 16px oklch(0.58 0.22 25 / 0.3)",
       },
       keyframes: {
         "accordion-down": {
@@ -95,20 +107,15 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "fade-up": {
-          from: { opacity: "0", transform: "translateY(20px)" },
+        "fade-in": {
+          from: { opacity: "0", transform: "translateY(8px)" },
           to: { opacity: "1", transform: "translateY(0)" },
-        },
-        "scale-in": {
-          from: { opacity: "0", transform: "scale(0.95)" },
-          to: { opacity: "1", transform: "scale(1)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-up": "fade-up 0.4s ease-out",
-        "scale-in": "scale-in 0.3s ease-out",
+        "fade-in": "fade-in 0.35s ease-out",
       },
     },
   },
