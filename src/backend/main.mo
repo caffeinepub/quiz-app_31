@@ -6,10 +6,12 @@ import Runtime "mo:core/Runtime";
 import Order "mo:core/Order";
 import Time "mo:core/Time";
 import List "mo:core/List";
-
+import Nat "mo:core/Nat";
+import Float "mo:core/Float";
 import Int "mo:core/Int";
+import Migration "migration";
 
-
+(with migration = Migration.run)
 actor {
   type Category = {
     id : Text;
@@ -53,8 +55,37 @@ actor {
     };
   };
 
+  type Post = {
+    id : Text;
+    author : Text;
+    content : Text;
+    likes : Nat;
+    timestamp : Time.Time;
+    tags : [Text];
+  };
+
+  module Post {
+    public func compare(a : Post, b : Post) : Order.Order {
+      Int.compare(b.timestamp, a.timestamp);
+    };
+  };
+
+  type StockSignal = {
+    ticker : Text;
+    name : Text;
+    signal : Text;
+    entry : Float;
+    target : Float;
+    stoploss : Float;
+    strength : Nat;
+    reason : Text;
+    timeframe : Text;
+    updatedAt : Time.Time;
+  };
+
   let categories = Map.empty<Text, Category>();
   let questions = Map.empty<Text, Question>();
+  let posts = Map.empty<Text, Post>();
   let leaderboard = List.empty<LeaderboardEntry>();
 
   public shared ({ caller }) func initialize() : async () {
@@ -78,8 +109,8 @@ actor {
       categories.add(category.id, category);
     };
 
-    // General Knowledge Questions (1-20)
-    let generalQuestions = [
+    let allQuestions = [
+      // General Knowledge (1-20)
       { id = "gen_q01"; categoryId = "general"; text = "भारत की राजधानी क्या है?"; options = ["Mumbai", "Delhi", "Kolkata", "Chennai"]; correctAnswer = 1 },
       { id = "gen_q02"; categoryId = "general"; text = "भारत के प्रधानमंत्री (2025)?"; options = ["Rahul Gandhi", "Narendra Modi", "Amit Shah", "Manmohan Singh"]; correctAnswer = 1 },
       { id = "gen_q03"; categoryId = "general"; text = "ताजमहल कहाँ है?"; options = ["Delhi", "Agra", "Jaipur", "Mumbai"]; correctAnswer = 1 },
@@ -100,10 +131,8 @@ actor {
       { id = "gen_q18"; categoryId = "general"; text = "भारत का राष्ट्रीय फूल?"; options = ["Rose", "Jasmine", "Lotus", "Marigold"]; correctAnswer = 2 },
       { id = "gen_q19"; categoryId = "general"; text = "पानी का रासायनिक सूत्र?"; options = ["H2O2", "HO", "H2O", "CO2"]; correctAnswer = 2 },
       { id = "gen_q20"; categoryId = "general"; text = "पृथ्वी का उपग्रह?"; options = ["Sun", "Mars", "Moon", "Venus"]; correctAnswer = 2 },
-    ];
 
-    // Science Questions (21-40)
-    let scienceQuestions = [
+      // Science (21-40)
       { id = "sci_q01"; categoryId = "science"; text = "मनुष्य के शरीर में कितनी हड्डियाँ होती हैं?"; options = ["196", "200", "206", "212"]; correctAnswer = 2 },
       { id = "sci_q02"; categoryId = "science"; text = "पानी का boiling point?"; options = ["90°C", "100°C", "110°C", "120°C"]; correctAnswer = 1 },
       { id = "sci_q03"; categoryId = "science"; text = "पृथ्वी सूर्य का चक्कर कितने दिन में लगाती है?"; options = ["300 days", "365 days", "400 days", "366 days"]; correctAnswer = 1 },
@@ -124,10 +153,8 @@ actor {
       { id = "sci_q18"; categoryId = "science"; text = "सूरज क्या है?"; options = ["Planet", "Moon", "Star", "Satellite"]; correctAnswer = 2 },
       { id = "sci_q19"; categoryId = "science"; text = "पौधे क्या बनाते हैं?"; options = ["CO2", "Nitrogen", "Oxygen", "Hydrogen"]; correctAnswer = 2 },
       { id = "sci_q20"; categoryId = "science"; text = "बल का unit?"; options = ["Watt", "Joule", "Pascal", "Newton"]; correctAnswer = 3 },
-    ];
 
-    // Math Questions (41-60)
-    let mathQuestions = [
+      // Math (41-60)
       { id = "math_q01"; categoryId = "math"; text = "2 + 2 = ?"; options = ["3", "4", "5", "6"]; correctAnswer = 1 },
       { id = "math_q02"; categoryId = "math"; text = "5 x 6 = ?"; options = ["25", "28", "30", "35"]; correctAnswer = 2 },
       { id = "math_q03"; categoryId = "math"; text = "10 / 2 = ?"; options = ["3", "4", "5", "6"]; correctAnswer = 2 },
@@ -148,10 +175,8 @@ actor {
       { id = "math_q18"; categoryId = "math"; text = "6^2 = ?"; options = ["24", "30", "36", "42"]; correctAnswer = 2 },
       { id = "math_q19"; categoryId = "math"; text = "18 / 3 = ?"; options = ["4", "5", "6", "7"]; correctAnswer = 2 },
       { id = "math_q20"; categoryId = "math"; text = "7 x 7 = ?"; options = ["42", "49", "56", "63"]; correctAnswer = 1 },
-    ];
 
-    // Computer Questions (61-80)
-    let computerQuestions = [
+      // Computer (61-80)
       { id = "comp_q01"; categoryId = "computer"; text = "CPU का पूरा नाम?"; options = ["Central Processing Unit", "Computer Unit", "Control Unit", "None"]; correctAnswer = 0 },
       { id = "comp_q02"; categoryId = "computer"; text = "Computer का दिमाग?"; options = ["RAM", "ROM", "CPU", "HDD"]; correctAnswer = 2 },
       { id = "comp_q03"; categoryId = "computer"; text = "Keyboard क्या है?"; options = ["Output device", "Input device", "Storage device", "Processing unit"]; correctAnswer = 1 },
@@ -172,10 +197,8 @@ actor {
       { id = "comp_q18"; categoryId = "computer"; text = "Cloud क्या है?"; options = ["Physical storage", "Online storage", "Local network", "Software"]; correctAnswer = 1 },
       { id = "comp_q19"; categoryId = "computer"; text = "App क्या है?"; options = ["Hardware", "Network", "Application", "Database"]; correctAnswer = 2 },
       { id = "comp_q20"; categoryId = "computer"; text = "Database क्या है?"; options = ["Single file", "Program", "Physical device", "Data collection"]; correctAnswer = 3 },
-    ];
 
-    // Fun / Mixed Questions (81-100)
-    let funQuestions = [
+      // Fun / Mixed (81-100)
       { id = "fun_q01"; categoryId = "fun"; text = "शेर को क्या कहते हैं?"; options = ["Tiger", "Lion", "Leopard", "Cheetah"]; correctAnswer = 1 },
       { id = "fun_q02"; categoryId = "fun"; text = "गाय क्या देती है?"; options = ["Eggs", "Milk", "Wool", "Honey"]; correctAnswer = 1 },
       { id = "fun_q03"; categoryId = "fun"; text = "कुत्ता क्या करता है?"; options = ["Moo", "Bark", "Roar", "Meow"]; correctAnswer = 1 },
@@ -197,14 +220,6 @@ actor {
       { id = "fun_q19"; categoryId = "fun"; text = "रात में क्या होता है?"; options = ["Light", "Dark", "Hot", "Rainy"]; correctAnswer = 1 },
       { id = "fun_q20"; categoryId = "fun"; text = "दिन में क्या होता है?"; options = ["Light", "Dark", "Cold", "Windy"]; correctAnswer = 0 },
     ];
-
-    let allQuestions = generalQuestions.concat(
-      scienceQuestions.concat(
-        mathQuestions.concat(
-          computerQuestions.concat(funQuestions)
-        )
-      )
-    );
 
     for (question in allQuestions.values()) {
       questions.add(question.id, question);
@@ -266,5 +281,223 @@ actor {
 
   public shared ({ caller }) func clearLeaderboard() : async () {
     leaderboard.clear();
+  };
+
+  // Community Posts
+  public shared ({ caller }) func createPost(author : Text, content : Text, tags : [Text]) : async Post {
+    let timestamp = Time.now();
+    let postId = author.concat(timestamp.toText()).concat("post");
+    let newPost : Post = {
+      id = postId;
+      author;
+      content;
+      likes = 0;
+      timestamp;
+      tags;
+    };
+    posts.add(postId, newPost);
+    newPost;
+  };
+
+  public query ({ caller }) func getPosts() : async [Post] {
+    posts.values().toArray().sort().sliceToArray(0, if (50 < posts.size()) { 50 } else { posts.size() });
+  };
+
+  public shared ({ caller }) func likePost(postId : Text) : async Bool {
+    switch (posts.get(postId)) {
+      case (null) { false };
+      case (?post) {
+        let updatedPost = { post with likes = post.likes + 1 };
+        posts.add(postId, updatedPost);
+        true;
+      };
+    };
+  };
+
+  public query ({ caller }) func getStockSignals() : async [StockSignal] {
+    let signals = [
+      {
+        ticker = "RELIANCE";
+        name = "Reliance Industries Ltd";
+        signal = "BUY";
+        entry = 2400.0;
+        target = 2500.0;
+        stoploss = 2350.0;
+        strength = 85;
+        reason = "Strong uptrend, positive market sentiment";
+        timeframe = "Medium-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "TCS";
+        name = "Tata Consultancy Services";
+        signal = "HOLD";
+        entry = 3200.0;
+        target = 3300.0;
+        stoploss = 3150.0;
+        strength = 65;
+        reason = "Stable performance, consolidating phase";
+        timeframe = "Short-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "HDFCBANK";
+        name = "HDFC Bank Ltd";
+        signal = "SELL";
+        entry = 1500.0;
+        target = 1450.0;
+        stoploss = 1520.0;
+        strength = 75;
+        reason = "Weak quarterly results, bearish trend";
+        timeframe = "Long-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "INFY";
+        name = "Infosys Ltd";
+        signal = "BUY";
+        entry = 1700.0;
+        target = 1800.0;
+        stoploss = 1680.0;
+        strength = 80;
+        reason = "Positive earnings, strong fundamentals";
+        timeframe = "Medium-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "TATAMOTORS";
+        name = "Tata Motors Ltd";
+        signal = "HOLD";
+        entry = 850.0;
+        target = 900.0;
+        stoploss = 830.0;
+        strength = 60;
+        reason = "Sideways movement, waiting for breakout";
+        timeframe = "Short-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "SBIN";
+        name = "State Bank of India";
+        signal = "BUY";
+        entry = 600.0;
+        target = 650.0;
+        stoploss = 590.0;
+        strength = 90;
+        reason = "Strong financials, sector leader";
+        timeframe = "Long-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "ICICIBANK";
+        name = "ICICI Bank Ltd";
+        signal = "SELL";
+        entry = 900.0;
+        target = 880.0;
+        stoploss = 910.0;
+        strength = 70;
+        reason = "Overbought, correction expected";
+        timeframe = "Medium-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "AXISBANK";
+        name = "Axis Bank Ltd";
+        signal = "BUY";
+        entry = 800.0;
+        target = 850.0;
+        stoploss = 790.0;
+        strength = 85;
+        reason = "Strong institutional buying";
+        timeframe = "Short-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "WIPRO";
+        name = "Wipro Ltd";
+        signal = "HOLD";
+        entry = 400.0;
+        target = 420.0;
+        stoploss = 390.0;
+        strength = 55;
+        reason = "Low volatility, wait and watch";
+        timeframe = "Medium-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "BAJFINANCE";
+        name = "Bajaj Finance Ltd";
+        signal = "BUY";
+        entry = 7000.0;
+        target = 7200.0;
+        stoploss = 6950.0;
+        strength = 78;
+        reason = "Strong growth potential";
+        timeframe = "Long-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "HINDUNILVR";
+        name = "Hindustan Unilever Ltd";
+        signal = "SELL";
+        entry = 2500.0;
+        target = 2450.0;
+        stoploss = 2520.0;
+        strength = 65;
+        reason = "Weak demand, sector underperformance";
+        timeframe = "Short-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "MARUTI";
+        name = "Maruti Suzuki India Ltd";
+        signal = "BUY";
+        entry = 9500.0;
+        target = 9700.0;
+        stoploss = 9450.0;
+        strength = 88;
+        reason = "New model launch, positive outlook";
+        timeframe = "Medium-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "SUNPHARMA";
+        name = "Sun Pharmaceutical Industries Ltd";
+        signal = "HOLD";
+        entry = 800.0;
+        target = 820.0;
+        stoploss = 790.0;
+        strength = 58;
+        reason = "Stable earnings, sector rotation";
+        timeframe = "Short-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "ADANIENT";
+        name = "Adani Enterprises Ltd";
+        signal = "BUY";
+        entry = 2000.0;
+        target = 2100.0;
+        stoploss = 1970.0;
+        strength = 82;
+        reason = "Expansion plans, high growth sector";
+        timeframe = "Long-term";
+        updatedAt = Time.now();
+      },
+      {
+        ticker = "LT";
+        name = "Larsen & Toubro Ltd";
+        signal = "BUY";
+        entry = 2500.0;
+        target = 2600.0;
+        stoploss = 2470.0;
+        strength = 80;
+        reason = "Strong order book, sector leader";
+        timeframe = "Medium-term";
+        updatedAt = Time.now();
+      },
+    ];
+
+    signals;
   };
 };

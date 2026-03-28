@@ -1,45 +1,73 @@
-import List "mo:core/List";
 import Map "mo:core/Map";
-import Text "mo:core/Text";
+import List "mo:core/List";
+import Time "mo:core/Time";
 
 module {
-  type Category = {
-    id : Text;
-    name : Text;
-  };
-
-  type Question = {
-    id : Text;
-    categoryId : Text;
-    text : Text;
-    options : [Text];
-    correctAnswer : Nat;
-  };
-
-  type LeaderboardEntry = {
-    name : Text;
-    score : Nat;
-    total : Nat;
-    percentage : Float;
-    category : Text;
-    timestamp : Int;
-  };
-
   type OldActor = {
-    categories : Map.Map<Text, Category>;
-    questions : Map.Map<Text, Question>;
+    categories : Map.Map<Text, {
+      id : Text;
+      name : Text;
+    }>;
+    questions : Map.Map<Text, {
+      id : Text;
+      categoryId : Text;
+      text : Text;
+      options : [Text];
+      correctAnswer : Nat;
+    }>;
+    leaderboard : List.List<{
+      name : Text;
+      score: Nat;
+      total: Nat;
+      percentage: Float;
+      category: Text;
+      timestamp: Time.Time;
+    }>;
   };
 
   type NewActor = {
-    categories : Map.Map<Text, Category>;
-    questions : Map.Map<Text, Question>;
-    leaderboard : List.List<LeaderboardEntry>;
+    categories : Map.Map<Text, {
+      id : Text;
+      name : Text;
+    }>;
+    questions : Map.Map<Text, {
+      id : Text;
+      categoryId : Text;
+      text : Text;
+      options : [Text];
+      correctAnswer : Nat;
+    }>;
+    posts : Map.Map<Text, {
+      id : Text;
+      author : Text;
+      content : Text;
+      likes : Nat;
+      timestamp : Time.Time;
+      tags : [Text];
+    }>;
+    leaderboard : List.List<{
+      name : Text;
+      score: Nat;
+      total: Nat;
+      percentage: Float;
+      category: Text;
+      timestamp: Time.Time;
+    }>;
   };
 
-  public func run(oldActor : OldActor) : NewActor {
+  public func run(old : OldActor) : NewActor {
+    let emptyPosts = Map.empty<Text, {
+      id: Text;
+      author: Text;
+      content: Text;
+      likes: Nat;
+      timestamp: Time.Time;
+      tags: [Text];
+    }>();
+
     {
-      oldActor with
-      leaderboard = List.empty<LeaderboardEntry>();
+      old with
+      posts = emptyPosts;
     };
   };
 };

@@ -19,6 +19,14 @@ export interface LeaderboardEntry {
   'category' : string,
   'percentage' : number,
 }
+export interface Post {
+  'id' : string,
+  'content' : string,
+  'tags' : Array<string>,
+  'author' : string,
+  'likes' : bigint,
+  'timestamp' : Time,
+}
 export interface Question {
   'id' : string,
   'categoryId' : string,
@@ -26,15 +34,31 @@ export interface Question {
   'correctAnswer' : bigint,
   'options' : Array<string>,
 }
+export interface StockSignal {
+  'ticker' : string,
+  'timeframe' : string,
+  'name' : string,
+  'entry' : number,
+  'updatedAt' : Time,
+  'target' : number,
+  'strength' : bigint,
+  'stoploss' : number,
+  'signal' : string,
+  'reason' : string,
+}
 export type Time = bigint;
 export interface _SERVICE {
   'clearLeaderboard' : ActorMethod<[], undefined>,
+  'createPost' : ActorMethod<[string, string, Array<string>], Post>,
   'forceReinitialize' : ActorMethod<[], undefined>,
   'getCategories' : ActorMethod<[], Array<Category>>,
   'getLeaderboard' : ActorMethod<[], Array<LeaderboardEntry>>,
+  'getPosts' : ActorMethod<[], Array<Post>>,
   'getQuestionById' : ActorMethod<[string], Question>,
   'getQuestionsByCategory' : ActorMethod<[string], Array<Question>>,
+  'getStockSignals' : ActorMethod<[], Array<StockSignal>>,
   'initialize' : ActorMethod<[], undefined>,
+  'likePost' : ActorMethod<[string], boolean>,
   'submitScore' : ActorMethod<[string, bigint, bigint, string], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;

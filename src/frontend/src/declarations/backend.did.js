@@ -8,8 +8,16 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
-export const Category = IDL.Record({ 'id' : IDL.Text, 'name' : IDL.Text });
 export const Time = IDL.Int;
+export const Post = IDL.Record({
+  'id' : IDL.Text,
+  'content' : IDL.Text,
+  'tags' : IDL.Vec(IDL.Text),
+  'author' : IDL.Text,
+  'likes' : IDL.Nat,
+  'timestamp' : Time,
+});
+export const Category = IDL.Record({ 'id' : IDL.Text, 'name' : IDL.Text });
 export const LeaderboardEntry = IDL.Record({
   'total' : IDL.Nat,
   'name' : IDL.Text,
@@ -25,19 +33,35 @@ export const Question = IDL.Record({
   'correctAnswer' : IDL.Nat,
   'options' : IDL.Vec(IDL.Text),
 });
+export const StockSignal = IDL.Record({
+  'ticker' : IDL.Text,
+  'timeframe' : IDL.Text,
+  'name' : IDL.Text,
+  'entry' : IDL.Float64,
+  'updatedAt' : Time,
+  'target' : IDL.Float64,
+  'strength' : IDL.Nat,
+  'stoploss' : IDL.Float64,
+  'signal' : IDL.Text,
+  'reason' : IDL.Text,
+});
 
 export const idlService = IDL.Service({
   'clearLeaderboard' : IDL.Func([], [], []),
+  'createPost' : IDL.Func([IDL.Text, IDL.Text, IDL.Vec(IDL.Text)], [Post], []),
   'forceReinitialize' : IDL.Func([], [], []),
   'getCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
   'getLeaderboard' : IDL.Func([], [IDL.Vec(LeaderboardEntry)], ['query']),
+  'getPosts' : IDL.Func([], [IDL.Vec(Post)], ['query']),
   'getQuestionById' : IDL.Func([IDL.Text], [Question], ['query']),
   'getQuestionsByCategory' : IDL.Func(
       [IDL.Text],
       [IDL.Vec(Question)],
       ['query'],
     ),
+  'getStockSignals' : IDL.Func([], [IDL.Vec(StockSignal)], ['query']),
   'initialize' : IDL.Func([], [], []),
+  'likePost' : IDL.Func([IDL.Text], [IDL.Bool], []),
   'submitScore' : IDL.Func(
       [IDL.Text, IDL.Nat, IDL.Nat, IDL.Text],
       [IDL.Bool],
@@ -48,8 +72,16 @@ export const idlService = IDL.Service({
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
-  const Category = IDL.Record({ 'id' : IDL.Text, 'name' : IDL.Text });
   const Time = IDL.Int;
+  const Post = IDL.Record({
+    'id' : IDL.Text,
+    'content' : IDL.Text,
+    'tags' : IDL.Vec(IDL.Text),
+    'author' : IDL.Text,
+    'likes' : IDL.Nat,
+    'timestamp' : Time,
+  });
+  const Category = IDL.Record({ 'id' : IDL.Text, 'name' : IDL.Text });
   const LeaderboardEntry = IDL.Record({
     'total' : IDL.Nat,
     'name' : IDL.Text,
@@ -65,19 +97,39 @@ export const idlFactory = ({ IDL }) => {
     'correctAnswer' : IDL.Nat,
     'options' : IDL.Vec(IDL.Text),
   });
+  const StockSignal = IDL.Record({
+    'ticker' : IDL.Text,
+    'timeframe' : IDL.Text,
+    'name' : IDL.Text,
+    'entry' : IDL.Float64,
+    'updatedAt' : Time,
+    'target' : IDL.Float64,
+    'strength' : IDL.Nat,
+    'stoploss' : IDL.Float64,
+    'signal' : IDL.Text,
+    'reason' : IDL.Text,
+  });
   
   return IDL.Service({
     'clearLeaderboard' : IDL.Func([], [], []),
+    'createPost' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Vec(IDL.Text)],
+        [Post],
+        [],
+      ),
     'forceReinitialize' : IDL.Func([], [], []),
     'getCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
     'getLeaderboard' : IDL.Func([], [IDL.Vec(LeaderboardEntry)], ['query']),
+    'getPosts' : IDL.Func([], [IDL.Vec(Post)], ['query']),
     'getQuestionById' : IDL.Func([IDL.Text], [Question], ['query']),
     'getQuestionsByCategory' : IDL.Func(
         [IDL.Text],
         [IDL.Vec(Question)],
         ['query'],
       ),
+    'getStockSignals' : IDL.Func([], [IDL.Vec(StockSignal)], ['query']),
     'initialize' : IDL.Func([], [], []),
+    'likePost' : IDL.Func([IDL.Text], [IDL.Bool], []),
     'submitScore' : IDL.Func(
         [IDL.Text, IDL.Nat, IDL.Nat, IDL.Text],
         [IDL.Bool],

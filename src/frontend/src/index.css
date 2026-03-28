@@ -1,86 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "Satoshi";
-  src: url("/assets/fonts/Satoshi.woff2") format("woff2");
-  font-weight: 300 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("/assets/fonts/JetBrainsMono.woff2") format("woff2");
-  font-weight: 300 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 @layer base {
   :root {
+    --background: 218 31% 7%;
+    --foreground: 210 45% 95%;
+    --card: 215 28% 10%;
+    --card-foreground: 210 45% 95%;
+    --popover: 215 30% 12%;
+    --popover-foreground: 210 45% 95%;
+    --primary: 214 84% 56%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 214 27% 17%;
+    --secondary-foreground: 210 45% 95%;
+    --muted: 214 27% 14%;
+    --muted-foreground: 207 13% 66%;
+    --accent: 214 84% 56%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --border: 214 27% 17%;
+    --input: 214 27% 17%;
+    --ring: 214 84% 56%;
     --radius: 0.75rem;
-
-    /* === Option Traders Dark Palette === */
-    /* Page bg #0B0F14 */
-    --background: 0.1 0.018 240;
-    /* Cards #151F2B */
-    --card: 0.15 0.026 240;
-    --card-foreground: 0.94 0.012 240;
-    /* Popovers */
-    --popover: 0.15 0.026 240;
-    --popover-foreground: 0.94 0.012 240;
-    /* Primary text #E6EEF7 */
-    --foreground: 0.94 0.012 240;
-    /* Muted panel */
-    --muted: 0.2 0.03 240;
-    --muted-foreground: 0.65 0.025 240;
-    /* Border #223142 */
-    --border: 0.24 0.038 240;
-    --input: 0.24 0.038 240;
-    /* Primary teal #22C3B5 */
-    --primary: 0.72 0.12 185;
-    --primary-foreground: 0.1 0.018 240;
-    /* Secondary panel #121A24 */
-    --secondary: 0.18 0.028 240;
-    --secondary-foreground: 0.94 0.012 240;
-    /* Accent */
-    --accent: 0.22 0.032 240;
-    --accent-foreground: 0.94 0.012 240;
-    /* Destructive / SELL red #E74C3C */
-    --destructive: 0.58 0.22 25;
-    --destructive-foreground: 0.97 0.005 240;
-    /* Ring */
-    --ring: 0.72 0.12 185;
-    /* Success / BUY green #2ECC71 */
-    --success: 0.72 0.18 148;
-    --success-foreground: 0.1 0.018 240;
-    /* Warning / Neutral amber #F39C12 */
-    --warning: 0.78 0.17 70;
-    --warning-foreground: 0.1 0.018 240;
-    /* Teal aliases */
-    --buy: 0.72 0.18 148;
-    --buy-foreground: 0.97 0.005 240;
-    --sell: 0.58 0.22 25;
-    --sell-foreground: 0.97 0.005 240;
-
-    /* Charts */
-    --chart-1: 0.72 0.12 185;
-    --chart-2: 0.72 0.18 148;
-    --chart-3: 0.58 0.22 25;
-    --chart-4: 0.78 0.17 70;
-    --chart-5: 0.6 0.18 260;
-
-    /* Sidebar slightly lighter than bg */
-    --sidebar: 0.13 0.022 240;
-    --sidebar-foreground: 0.94 0.012 240;
-    --sidebar-primary: 0.72 0.12 185;
-    --sidebar-primary-foreground: 0.1 0.018 240;
-    --sidebar-accent: 0.2 0.03 240;
-    --sidebar-accent-foreground: 0.94 0.012 240;
-    --sidebar-border: 0.24 0.038 240;
-    --sidebar-ring: 0.72 0.12 185;
+    --chart-1: 214 84% 56%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 0 84% 60%;
+    --chart-4: 38 90% 55%;
+    --chart-5: 280 60% 60%;
   }
 
   * {
@@ -88,73 +40,63 @@
   }
 
   body {
-    @apply bg-background text-foreground font-body;
-    font-feature-settings: "tnum" 1;
+    @apply bg-background text-foreground;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 4px;
     height: 4px;
   }
   ::-webkit-scrollbar-track {
-    background: oklch(0.1 0.018 240);
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.28 0.038 240);
+    background: hsl(var(--border));
     border-radius: 2px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.38 0.048 240);
-  }
+}
 
-  /* Pulse animation for live indicator */
-  @keyframes live-pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.4;
-    }
+@layer utilities {
+  .text-gain {
+    color: hsl(142, 71%, 50%);
   }
-  .live-dot {
-    animation: live-pulse 1.5s ease-in-out infinite;
+  .text-loss {
+    color: hsl(0, 84%, 65%);
   }
-
-  @keyframes price-flash-green {
+  .bg-gain {
+    background-color: hsl(142, 71%, 10%);
+  }
+  .bg-loss {
+    background-color: hsl(0, 84%, 12%);
+  }
+  .flash-gain {
+    animation: flashGain 0.6s ease-out;
+  }
+  .flash-loss {
+    animation: flashLoss 0.6s ease-out;
+  }
+  @keyframes flashGain {
     0% {
-      background-color: oklch(0.72 0.18 148 / 0.25);
+      background-color: hsl(142, 71%, 18%);
     }
     100% {
       background-color: transparent;
     }
   }
-  @keyframes price-flash-red {
+  @keyframes flashLoss {
     0% {
-      background-color: oklch(0.58 0.22 25 / 0.25);
+      background-color: hsl(0, 84%, 18%);
     }
     100% {
       background-color: transparent;
     }
   }
-  .flash-green {
-    animation: price-flash-green 0.6s ease-out;
+  .sparkline-up {
+    stroke: hsl(142, 71%, 50%);
   }
-  .flash-red {
-    animation: price-flash-red 0.6s ease-out;
-  }
-
-  @keyframes ticker-scroll {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
-  }
-  .ticker-animate {
-    animation: ticker-scroll 30s linear infinite;
+  .sparkline-down {
+    stroke: hsl(0, 84%, 65%);
   }
 }

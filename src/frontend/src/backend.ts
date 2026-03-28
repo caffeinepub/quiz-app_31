@@ -97,6 +97,18 @@ export interface LeaderboardEntry {
     category: string;
     percentage: number;
 }
+export interface StockSignal {
+    ticker: string;
+    timeframe: string;
+    name: string;
+    entry: number;
+    updatedAt: Time;
+    target: number;
+    strength: bigint;
+    stoploss: number;
+    signal: string;
+    reason: string;
+}
 export interface Question {
     id: string;
     categoryId: string;
@@ -105,18 +117,30 @@ export interface Question {
     options: Array<string>;
 }
 export type Time = bigint;
+export interface Post {
+    id: string;
+    content: string;
+    tags: Array<string>;
+    author: string;
+    likes: bigint;
+    timestamp: Time;
+}
 export interface Category {
     id: string;
     name: string;
 }
 export interface backendInterface {
     clearLeaderboard(): Promise<void>;
+    createPost(author: string, content: string, tags: Array<string>): Promise<Post>;
     forceReinitialize(): Promise<void>;
     getCategories(): Promise<Array<Category>>;
     getLeaderboard(): Promise<Array<LeaderboardEntry>>;
+    getPosts(): Promise<Array<Post>>;
     getQuestionById(questionId: string): Promise<Question>;
     getQuestionsByCategory(categoryId: string): Promise<Array<Question>>;
+    getStockSignals(): Promise<Array<StockSignal>>;
     initialize(): Promise<void>;
+    likePost(postId: string): Promise<boolean>;
     submitScore(name: string, score: bigint, total: bigint, category: string): Promise<boolean>;
 }
 export class Backend implements backendInterface {
@@ -132,6 +156,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.clearLeaderboard();
+            return result;
+        }
+    }
+    async createPost(arg0: string, arg1: string, arg2: Array<string>): Promise<Post> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.createPost(arg0, arg1, arg2);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.createPost(arg0, arg1, arg2);
             return result;
         }
     }
@@ -177,6 +215,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async getPosts(): Promise<Array<Post>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getPosts();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getPosts();
+            return result;
+        }
+    }
     async getQuestionById(arg0: string): Promise<Question> {
         if (this.processError) {
             try {
@@ -205,6 +257,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async getStockSignals(): Promise<Array<StockSignal>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getStockSignals();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getStockSignals();
+            return result;
+        }
+    }
     async initialize(): Promise<void> {
         if (this.processError) {
             try {
@@ -216,6 +282,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.initialize();
+            return result;
+        }
+    }
+    async likePost(arg0: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.likePost(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.likePost(arg0);
             return result;
         }
     }

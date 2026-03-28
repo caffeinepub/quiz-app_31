@@ -1,35 +1,31 @@
-# Option Traders
+# BazaarBuzz - Trending App
 
 ## Current State
-Empty project. New build.
+- Backend has quiz/leaderboard functionality only
+- CommunityPage is empty (returns null)
+- BazaarBuzzPage has static feed posts from buzzData.ts
+- No real user posts stored in backend
+- No stock signals/tips section
 
 ## Requested Changes (Diff)
 
 ### Add
-- Complete trading platform app inspired by TradZoo
-- App name: Option Traders — "Platform for Traders by Traders"
-- Features:
-  - Index FNO Analysis (Nifty 50, Bank Nifty, Finnifty)
-  - Equity FNO Analysis (top NSE stocks with options data)
-  - Latest Market Trends (news + trend analysis)
-  - Real Time Intraday Updates (live simulated prices + signals)
-  - Community Feed (traders sharing ideas)
-  - Dashboard with candlestick chart, market signals, ticker
-  - Option Chain with CE/PE, OI, LTP, ITM highlighting
-  - BUY/SELL signal cards with entry, stoploss, target
-  - Market ticker strip
-  - Daily update notifications panel
+- Backend: Community posts CRUD (createPost, getPosts, likePost)
+- Backend: Stock signals data (getStockSignals) - returns UP/DOWN signals for 15 NSE stocks with entry, target, stoploss, reason
+- Frontend: CommunityPage - real post creation form, list of posts from backend, like button
+- Frontend: Stock Signals page / section - shows which stocks are BUY (UP) and SELL (DOWN) with detailed signal cards (Entry, Target, SL, Signal Strength, Reason)
+- Frontend: Navigation link to Signals/Tips section in BazaarBuzz
 
 ### Modify
-- N/A (new project)
+- BazaarBuzzPage: Add "Signals" tab in nav that shows the stock signals section
+- App.tsx: Wire CommunityPage with backend posts if needed
 
 ### Remove
-- N/A
+- Nothing
 
 ## Implementation Plan
-1. Generate Motoko backend for storing community posts, daily updates, watchlist
-2. Build full dark-theme React frontend matching the design preview
-3. Pages: Dashboard, Index FNO, Equity FNO, Market Trends, Community, Support
-4. Simulated live data with realistic Indian market prices updating every few seconds
-5. Option chain, signal cards, candlestick chart using recharts/canvas
-6. Community feed with post creation
+1. Update backend main.mo to add Post type, community post functions, and stock signals
+2. Regenerate backend.d.ts bindings
+3. Update CommunityPage to fetch/create posts from backend
+4. Add StockSignalsPage or section showing BUY/SELL signals with detailed cards
+5. Update BazaarBuzzPage nav to include Community and Signals tabs properly
