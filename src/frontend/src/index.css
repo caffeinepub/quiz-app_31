@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,33 +6,34 @@
 
 @layer base {
   :root {
-    --background: 218 31% 7%;
-    --foreground: 210 45% 95%;
-    --card: 215 28% 10%;
-    --card-foreground: 210 45% 95%;
-    --popover: 215 30% 12%;
-    --popover-foreground: 210 45% 95%;
-    --primary: 214 84% 56%;
+    /* Dark AI Studio Theme - OKLCH mapped to HSL for shadcn compat */
+    --background: 222 24% 5%; /* #0B0F14 near-black charcoal */
+    --foreground: 220 20% 96%; /* #F3F4F6 off-white */
+    --card: 220 26% 9%; /* #111827 deep slate */
+    --card-foreground: 220 20% 96%;
+    --popover: 218 28% 11%;
+    --popover-foreground: 220 20% 96%;
+    --primary: 230 85% 60%; /* #3B82F6 blue */
     --primary-foreground: 0 0% 100%;
-    --secondary: 214 27% 17%;
-    --secondary-foreground: 210 45% 95%;
-    --muted: 214 27% 14%;
-    --muted-foreground: 207 13% 66%;
-    --accent: 214 84% 56%;
+    --secondary: 217 30% 14%; /* panel surface */
+    --secondary-foreground: 220 20% 96%;
+    --muted: 218 26% 13%;
+    --muted-foreground: 215 13% 63%; /* #9CA3AF cool gray */
+    --accent: 271 91% 65%; /* #8B5CF6 purple */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --success: 142 71% 45%;
+    --success: 162 94% 45%; /* #22D3EE teal/cyan glow */
     --success-foreground: 0 0% 100%;
-    --border: 214 27% 17%;
-    --input: 214 27% 17%;
-    --ring: 214 84% 56%;
+    --border: 214 26% 18%; /* #243041 muted slate */
+    --input: 214 26% 14%;
+    --ring: 230 85% 60%;
     --radius: 0.75rem;
-    --chart-1: 214 84% 56%;
-    --chart-2: 142 71% 45%;
-    --chart-3: 0 84% 60%;
-    --chart-4: 38 90% 55%;
-    --chart-5: 280 60% 60%;
+    --chart-1: 230 85% 60%;
+    --chart-2: 271 91% 65%;
+    --chart-3: 328 86% 66%; /* #EC4899 pink */
+    --chart-4: 186 94% 46%; /* #22D3EE cyan */
+    --chart-5: 172 85% 45%; /* #2DD4BF teal */
   }
 
   * {
@@ -43,6 +44,11 @@
     @apply bg-background text-foreground;
     font-family: "Plus Jakarta Sans", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    color-scheme: dark;
   }
 
   ::-webkit-scrollbar {
@@ -59,44 +65,119 @@
 }
 
 @layer utilities {
-  .text-gain {
-    color: hsl(142, 71%, 50%);
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  .text-loss {
-    color: hsl(0, 84%, 65%);
+
+  /* Gradient border button */
+  .gradient-border {
+    background: linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
+      linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899) border-box;
+    border: 1px solid transparent;
   }
-  .bg-gain {
-    background-color: hsl(142, 71%, 10%);
+
+  /* Gradient fill button */
+  .gradient-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+    transition: opacity 0.2s ease, transform 0.15s ease;
   }
-  .bg-loss {
-    background-color: hsl(0, 84%, 12%);
+  .gradient-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
   }
-  .flash-gain {
-    animation: flashGain 0.6s ease-out;
+  .gradient-btn:active {
+    transform: translateY(0);
   }
-  .flash-loss {
-    animation: flashLoss 0.6s ease-out;
+
+  /* Card hover effect */
+  .card-hover {
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s
+      ease;
   }
-  @keyframes flashGain {
+  .card-hover:hover {
+    transform: scale(1.02);
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 20px hsl(230 85% 60% / 0.12);
+  }
+
+  /* Cyan glow accent */
+  .cyan-glow {
+    box-shadow: 0 0 16px #22d3ee44;
+  }
+
+  /* Neon accents */
+  .neon-text {
+    color: #22d3ee;
+    text-shadow: 0 0 8px #22d3ee88;
+  }
+
+  /* Loading shimmer */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--card)) 0%,
+      hsl(var(--muted)) 50%,
+      hsl(var(--card)) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer {
     0% {
-      background-color: hsl(142, 71%, 18%);
+      background-position: 200% 0;
     }
     100% {
-      background-color: transparent;
+      background-position: -200% 0;
     }
   }
-  @keyframes flashLoss {
+
+  /* Progress glow */
+  .progress-glow {
+    box-shadow: 0 0 12px hsl(var(--primary) / 0.5);
+  }
+
+  /* Pulse ring */
+  @keyframes pulse-ring {
     0% {
-      background-color: hsl(0, 84%, 18%);
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px hsl(var(--primary) / 0);
     }
     100% {
-      background-color: transparent;
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0);
     }
   }
-  .sparkline-up {
-    stroke: hsl(142, 71%, 50%);
+  .pulse-ring {
+    animation: pulse-ring 2s ease infinite;
   }
-  .sparkline-down {
-    stroke: hsl(0, 84%, 65%);
+
+  /* Fade in up */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .fade-in-up {
+    animation: fadeInUp 0.4s ease forwards;
+  }
+
+  /* Style preset scroll */
+  .preset-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  .preset-scroll > * {
+    scroll-snap-align: start;
   }
 }

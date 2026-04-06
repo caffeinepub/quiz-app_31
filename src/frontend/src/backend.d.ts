@@ -7,57 +7,35 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
-export interface LeaderboardEntry {
-    total: bigint;
-    name: string;
-    score: bigint;
-    timestamp: Time;
-    category: string;
-    percentage: number;
+export class ExternalBlob {
+    getBytes(): Promise<Uint8Array<ArrayBuffer>>;
+    getDirectURL(): string;
+    static fromURL(url: string): ExternalBlob;
+    static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
+    withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
 }
-export interface StockSignal {
-    ticker: string;
-    timeframe: string;
-    name: string;
-    entry: number;
-    updatedAt: Time;
-    target: number;
-    strength: bigint;
-    stoploss: number;
-    signal: string;
-    reason: string;
-}
-export interface Question {
-    id: string;
-    categoryId: string;
-    text: string;
-    correctAnswer: bigint;
-    options: Array<string>;
-}
-export type Time = bigint;
-export interface Post {
-    id: string;
-    content: string;
-    tags: Array<string>;
-    author: string;
+export interface Entry {
+    id: bigint;
+    data: string;
     likes: bigint;
     timestamp: Time;
+    isPublic: boolean;
 }
-export interface Category {
-    id: string;
-    name: string;
-}
+export type Time = bigint;
 export interface backendInterface {
-    clearLeaderboard(): Promise<void>;
-    createPost(author: string, content: string, tags: Array<string>): Promise<Post>;
-    forceReinitialize(): Promise<void>;
-    getCategories(): Promise<Array<Category>>;
-    getLeaderboard(): Promise<Array<LeaderboardEntry>>;
-    getPosts(): Promise<Array<Post>>;
-    getQuestionById(questionId: string): Promise<Question>;
-    getQuestionsByCategory(categoryId: string): Promise<Array<Question>>;
-    getStockSignals(): Promise<Array<StockSignal>>;
-    initialize(): Promise<void>;
-    likePost(postId: string): Promise<boolean>;
-    submitScore(name: string, score: bigint, total: bigint, category: string): Promise<boolean>;
+    addToCollection(id: string, entryId: bigint): Promise<void>;
+    createEntry(id: string, data: string): Promise<Entry>;
+    createUser(id: string): Promise<boolean>;
+    deleteEntry(entryId: bigint): Promise<void>;
+    getAllEntries(): Promise<Array<Entry>>;
+    getAllUsers(): Promise<Array<string>>;
+    getEntry(entryId: bigint): Promise<Entry>;
+    getUser(id: string): Promise<Array<bigint>>;
+    getUserEntries(id: string): Promise<Array<Entry>>;
+    isPublic(entryId: bigint): Promise<boolean>;
+    likeEntry(id: string, entryId: bigint): Promise<void>;
+    removeFromCollection(id: string, entryId: bigint): Promise<void>;
+    saveImage(userId: string, name: string, blob: ExternalBlob): Promise<void>;
+    saveVideo(userId: string, name: string, blob: ExternalBlob): Promise<void>;
+    updateEntry(entryId: bigint, data: string): Promise<void>;
 }

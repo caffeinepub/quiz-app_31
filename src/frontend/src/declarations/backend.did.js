@@ -8,133 +8,137 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const _CaffeineStorageCreateCertificateResult = IDL.Record({
+  'method' : IDL.Text,
+  'blob_hash' : IDL.Text,
+});
+export const _CaffeineStorageRefillInformation = IDL.Record({
+  'proposed_top_up_amount' : IDL.Opt(IDL.Nat),
+});
+export const _CaffeineStorageRefillResult = IDL.Record({
+  'success' : IDL.Opt(IDL.Bool),
+  'topped_up_amount' : IDL.Opt(IDL.Nat),
+});
 export const Time = IDL.Int;
-export const Post = IDL.Record({
-  'id' : IDL.Text,
-  'content' : IDL.Text,
-  'tags' : IDL.Vec(IDL.Text),
-  'author' : IDL.Text,
+export const Entry = IDL.Record({
+  'id' : IDL.Nat,
+  'data' : IDL.Text,
   'likes' : IDL.Nat,
   'timestamp' : Time,
+  'isPublic' : IDL.Bool,
 });
-export const Category = IDL.Record({ 'id' : IDL.Text, 'name' : IDL.Text });
-export const LeaderboardEntry = IDL.Record({
-  'total' : IDL.Nat,
-  'name' : IDL.Text,
-  'score' : IDL.Nat,
-  'timestamp' : Time,
-  'category' : IDL.Text,
-  'percentage' : IDL.Float64,
-});
-export const Question = IDL.Record({
-  'id' : IDL.Text,
-  'categoryId' : IDL.Text,
-  'text' : IDL.Text,
-  'correctAnswer' : IDL.Nat,
-  'options' : IDL.Vec(IDL.Text),
-});
-export const StockSignal = IDL.Record({
-  'ticker' : IDL.Text,
-  'timeframe' : IDL.Text,
-  'name' : IDL.Text,
-  'entry' : IDL.Float64,
-  'updatedAt' : Time,
-  'target' : IDL.Float64,
-  'strength' : IDL.Nat,
-  'stoploss' : IDL.Float64,
-  'signal' : IDL.Text,
-  'reason' : IDL.Text,
-});
+export const ExternalBlob = IDL.Vec(IDL.Nat8);
 
 export const idlService = IDL.Service({
-  'clearLeaderboard' : IDL.Func([], [], []),
-  'createPost' : IDL.Func([IDL.Text, IDL.Text, IDL.Vec(IDL.Text)], [Post], []),
-  'forceReinitialize' : IDL.Func([], [], []),
-  'getCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
-  'getLeaderboard' : IDL.Func([], [IDL.Vec(LeaderboardEntry)], ['query']),
-  'getPosts' : IDL.Func([], [IDL.Vec(Post)], ['query']),
-  'getQuestionById' : IDL.Func([IDL.Text], [Question], ['query']),
-  'getQuestionsByCategory' : IDL.Func(
-      [IDL.Text],
-      [IDL.Vec(Question)],
+  '_caffeineStorageBlobIsLive' : IDL.Func(
+      [IDL.Vec(IDL.Nat8)],
+      [IDL.Bool],
       ['query'],
     ),
-  'getStockSignals' : IDL.Func([], [IDL.Vec(StockSignal)], ['query']),
-  'initialize' : IDL.Func([], [], []),
-  'likePost' : IDL.Func([IDL.Text], [IDL.Bool], []),
-  'submitScore' : IDL.Func(
-      [IDL.Text, IDL.Nat, IDL.Nat, IDL.Text],
-      [IDL.Bool],
+  '_caffeineStorageBlobsToDelete' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Vec(IDL.Nat8))],
+      ['query'],
+    ),
+  '_caffeineStorageConfirmBlobDeletion' : IDL.Func(
+      [IDL.Vec(IDL.Vec(IDL.Nat8))],
+      [],
       [],
     ),
+  '_caffeineStorageCreateCertificate' : IDL.Func(
+      [IDL.Text],
+      [_CaffeineStorageCreateCertificateResult],
+      [],
+    ),
+  '_caffeineStorageRefillCashier' : IDL.Func(
+      [IDL.Opt(_CaffeineStorageRefillInformation)],
+      [_CaffeineStorageRefillResult],
+      [],
+    ),
+  '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
+  'addToCollection' : IDL.Func([IDL.Text, IDL.Nat], [], []),
+  'createEntry' : IDL.Func([IDL.Text, IDL.Text], [Entry], []),
+  'createUser' : IDL.Func([IDL.Text], [IDL.Bool], []),
+  'deleteEntry' : IDL.Func([IDL.Nat], [], []),
+  'getAllEntries' : IDL.Func([], [IDL.Vec(Entry)], []),
+  'getAllUsers' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
+  'getEntry' : IDL.Func([IDL.Nat], [Entry], []),
+  'getUser' : IDL.Func([IDL.Text], [IDL.Vec(IDL.Nat)], []),
+  'getUserEntries' : IDL.Func([IDL.Text], [IDL.Vec(Entry)], []),
+  'isPublic' : IDL.Func([IDL.Nat], [IDL.Bool], ['query']),
+  'likeEntry' : IDL.Func([IDL.Text, IDL.Nat], [], []),
+  'removeFromCollection' : IDL.Func([IDL.Text, IDL.Nat], [], []),
+  'saveImage' : IDL.Func([IDL.Text, IDL.Text, ExternalBlob], [], []),
+  'saveVideo' : IDL.Func([IDL.Text, IDL.Text, ExternalBlob], [], []),
+  'updateEntry' : IDL.Func([IDL.Nat, IDL.Text], [], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const _CaffeineStorageCreateCertificateResult = IDL.Record({
+    'method' : IDL.Text,
+    'blob_hash' : IDL.Text,
+  });
+  const _CaffeineStorageRefillInformation = IDL.Record({
+    'proposed_top_up_amount' : IDL.Opt(IDL.Nat),
+  });
+  const _CaffeineStorageRefillResult = IDL.Record({
+    'success' : IDL.Opt(IDL.Bool),
+    'topped_up_amount' : IDL.Opt(IDL.Nat),
+  });
   const Time = IDL.Int;
-  const Post = IDL.Record({
-    'id' : IDL.Text,
-    'content' : IDL.Text,
-    'tags' : IDL.Vec(IDL.Text),
-    'author' : IDL.Text,
+  const Entry = IDL.Record({
+    'id' : IDL.Nat,
+    'data' : IDL.Text,
     'likes' : IDL.Nat,
     'timestamp' : Time,
+    'isPublic' : IDL.Bool,
   });
-  const Category = IDL.Record({ 'id' : IDL.Text, 'name' : IDL.Text });
-  const LeaderboardEntry = IDL.Record({
-    'total' : IDL.Nat,
-    'name' : IDL.Text,
-    'score' : IDL.Nat,
-    'timestamp' : Time,
-    'category' : IDL.Text,
-    'percentage' : IDL.Float64,
-  });
-  const Question = IDL.Record({
-    'id' : IDL.Text,
-    'categoryId' : IDL.Text,
-    'text' : IDL.Text,
-    'correctAnswer' : IDL.Nat,
-    'options' : IDL.Vec(IDL.Text),
-  });
-  const StockSignal = IDL.Record({
-    'ticker' : IDL.Text,
-    'timeframe' : IDL.Text,
-    'name' : IDL.Text,
-    'entry' : IDL.Float64,
-    'updatedAt' : Time,
-    'target' : IDL.Float64,
-    'strength' : IDL.Nat,
-    'stoploss' : IDL.Float64,
-    'signal' : IDL.Text,
-    'reason' : IDL.Text,
-  });
+  const ExternalBlob = IDL.Vec(IDL.Nat8);
   
   return IDL.Service({
-    'clearLeaderboard' : IDL.Func([], [], []),
-    'createPost' : IDL.Func(
-        [IDL.Text, IDL.Text, IDL.Vec(IDL.Text)],
-        [Post],
-        [],
-      ),
-    'forceReinitialize' : IDL.Func([], [], []),
-    'getCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
-    'getLeaderboard' : IDL.Func([], [IDL.Vec(LeaderboardEntry)], ['query']),
-    'getPosts' : IDL.Func([], [IDL.Vec(Post)], ['query']),
-    'getQuestionById' : IDL.Func([IDL.Text], [Question], ['query']),
-    'getQuestionsByCategory' : IDL.Func(
-        [IDL.Text],
-        [IDL.Vec(Question)],
+    '_caffeineStorageBlobIsLive' : IDL.Func(
+        [IDL.Vec(IDL.Nat8)],
+        [IDL.Bool],
         ['query'],
       ),
-    'getStockSignals' : IDL.Func([], [IDL.Vec(StockSignal)], ['query']),
-    'initialize' : IDL.Func([], [], []),
-    'likePost' : IDL.Func([IDL.Text], [IDL.Bool], []),
-    'submitScore' : IDL.Func(
-        [IDL.Text, IDL.Nat, IDL.Nat, IDL.Text],
-        [IDL.Bool],
+    '_caffeineStorageBlobsToDelete' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Vec(IDL.Nat8))],
+        ['query'],
+      ),
+    '_caffeineStorageConfirmBlobDeletion' : IDL.Func(
+        [IDL.Vec(IDL.Vec(IDL.Nat8))],
+        [],
         [],
       ),
+    '_caffeineStorageCreateCertificate' : IDL.Func(
+        [IDL.Text],
+        [_CaffeineStorageCreateCertificateResult],
+        [],
+      ),
+    '_caffeineStorageRefillCashier' : IDL.Func(
+        [IDL.Opt(_CaffeineStorageRefillInformation)],
+        [_CaffeineStorageRefillResult],
+        [],
+      ),
+    '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
+    'addToCollection' : IDL.Func([IDL.Text, IDL.Nat], [], []),
+    'createEntry' : IDL.Func([IDL.Text, IDL.Text], [Entry], []),
+    'createUser' : IDL.Func([IDL.Text], [IDL.Bool], []),
+    'deleteEntry' : IDL.Func([IDL.Nat], [], []),
+    'getAllEntries' : IDL.Func([], [IDL.Vec(Entry)], []),
+    'getAllUsers' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
+    'getEntry' : IDL.Func([IDL.Nat], [Entry], []),
+    'getUser' : IDL.Func([IDL.Text], [IDL.Vec(IDL.Nat)], []),
+    'getUserEntries' : IDL.Func([IDL.Text], [IDL.Vec(Entry)], []),
+    'isPublic' : IDL.Func([IDL.Nat], [IDL.Bool], ['query']),
+    'likeEntry' : IDL.Func([IDL.Text, IDL.Nat], [], []),
+    'removeFromCollection' : IDL.Func([IDL.Text, IDL.Nat], [], []),
+    'saveImage' : IDL.Func([IDL.Text, IDL.Text, ExternalBlob], [], []),
+    'saveVideo' : IDL.Func([IDL.Text, IDL.Text, ExternalBlob], [], []),
+    'updateEntry' : IDL.Func([IDL.Nat, IDL.Text], [], []),
   });
 };
 

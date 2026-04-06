@@ -89,230 +89,384 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface LeaderboardEntry {
-    total: bigint;
-    name: string;
-    score: bigint;
-    timestamp: Time;
-    category: string;
-    percentage: number;
-}
-export interface StockSignal {
-    ticker: string;
-    timeframe: string;
-    name: string;
-    entry: number;
-    updatedAt: Time;
-    target: number;
-    strength: bigint;
-    stoploss: number;
-    signal: string;
-    reason: string;
-}
-export interface Question {
-    id: string;
-    categoryId: string;
-    text: string;
-    correctAnswer: bigint;
-    options: Array<string>;
-}
-export type Time = bigint;
-export interface Post {
-    id: string;
-    content: string;
-    tags: Array<string>;
-    author: string;
+export interface Entry {
+    id: bigint;
+    data: string;
     likes: bigint;
     timestamp: Time;
+    isPublic: boolean;
 }
-export interface Category {
-    id: string;
-    name: string;
+export interface _CaffeineStorageCreateCertificateResult {
+    method: string;
+    blob_hash: string;
+}
+export type Time = bigint;
+export interface _CaffeineStorageRefillResult {
+    success?: boolean;
+    topped_up_amount?: bigint;
+}
+export interface _CaffeineStorageRefillInformation {
+    proposed_top_up_amount?: bigint;
 }
 export interface backendInterface {
-    clearLeaderboard(): Promise<void>;
-    createPost(author: string, content: string, tags: Array<string>): Promise<Post>;
-    forceReinitialize(): Promise<void>;
-    getCategories(): Promise<Array<Category>>;
-    getLeaderboard(): Promise<Array<LeaderboardEntry>>;
-    getPosts(): Promise<Array<Post>>;
-    getQuestionById(questionId: string): Promise<Question>;
-    getQuestionsByCategory(categoryId: string): Promise<Array<Question>>;
-    getStockSignals(): Promise<Array<StockSignal>>;
-    initialize(): Promise<void>;
-    likePost(postId: string): Promise<boolean>;
-    submitScore(name: string, score: bigint, total: bigint, category: string): Promise<boolean>;
+    _caffeineStorageBlobIsLive(hash: Uint8Array): Promise<boolean>;
+    _caffeineStorageBlobsToDelete(): Promise<Array<Uint8Array>>;
+    _caffeineStorageConfirmBlobDeletion(blobs: Array<Uint8Array>): Promise<void>;
+    _caffeineStorageCreateCertificate(blobHash: string): Promise<_CaffeineStorageCreateCertificateResult>;
+    _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
+    _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
+    addToCollection(id: string, entryId: bigint): Promise<void>;
+    createEntry(id: string, data: string): Promise<Entry>;
+    createUser(id: string): Promise<boolean>;
+    deleteEntry(entryId: bigint): Promise<void>;
+    getAllEntries(): Promise<Array<Entry>>;
+    getAllUsers(): Promise<Array<string>>;
+    getEntry(entryId: bigint): Promise<Entry>;
+    getUser(id: string): Promise<Array<bigint>>;
+    getUserEntries(id: string): Promise<Array<Entry>>;
+    isPublic(entryId: bigint): Promise<boolean>;
+    likeEntry(id: string, entryId: bigint): Promise<void>;
+    removeFromCollection(id: string, entryId: bigint): Promise<void>;
+    saveImage(userId: string, name: string, blob: ExternalBlob): Promise<void>;
+    saveVideo(userId: string, name: string, blob: ExternalBlob): Promise<void>;
+    updateEntry(entryId: bigint, data: string): Promise<void>;
 }
+import type { ExternalBlob as _ExternalBlob, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
-    async clearLeaderboard(): Promise<void> {
+    async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
         if (this.processError) {
             try {
-                const result = await this.actor.clearLeaderboard();
+                const result = await this.actor._caffeineStorageBlobIsLive(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.clearLeaderboard();
+            const result = await this.actor._caffeineStorageBlobIsLive(arg0);
             return result;
         }
     }
-    async createPost(arg0: string, arg1: string, arg2: Array<string>): Promise<Post> {
+    async _caffeineStorageBlobsToDelete(): Promise<Array<Uint8Array>> {
         if (this.processError) {
             try {
-                const result = await this.actor.createPost(arg0, arg1, arg2);
+                const result = await this.actor._caffeineStorageBlobsToDelete();
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.createPost(arg0, arg1, arg2);
+            const result = await this.actor._caffeineStorageBlobsToDelete();
             return result;
         }
     }
-    async forceReinitialize(): Promise<void> {
+    async _caffeineStorageConfirmBlobDeletion(arg0: Array<Uint8Array>): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.forceReinitialize();
+                const result = await this.actor._caffeineStorageConfirmBlobDeletion(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.forceReinitialize();
+            const result = await this.actor._caffeineStorageConfirmBlobDeletion(arg0);
             return result;
         }
     }
-    async getCategories(): Promise<Array<Category>> {
+    async _caffeineStorageCreateCertificate(arg0: string): Promise<_CaffeineStorageCreateCertificateResult> {
         if (this.processError) {
             try {
-                const result = await this.actor.getCategories();
+                const result = await this.actor._caffeineStorageCreateCertificate(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getCategories();
+            const result = await this.actor._caffeineStorageCreateCertificate(arg0);
             return result;
         }
     }
-    async getLeaderboard(): Promise<Array<LeaderboardEntry>> {
+    async _caffeineStorageRefillCashier(arg0: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult> {
         if (this.processError) {
             try {
-                const result = await this.actor.getLeaderboard();
+                const result = await this.actor._caffeineStorageRefillCashier(to_candid_opt_n1(this._uploadFile, this._downloadFile, arg0));
+                return from_candid__CaffeineStorageRefillResult_n4(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor._caffeineStorageRefillCashier(to_candid_opt_n1(this._uploadFile, this._downloadFile, arg0));
+            return from_candid__CaffeineStorageRefillResult_n4(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async _caffeineStorageUpdateGatewayPrincipals(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor._caffeineStorageUpdateGatewayPrincipals();
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getLeaderboard();
+            const result = await this.actor._caffeineStorageUpdateGatewayPrincipals();
             return result;
         }
     }
-    async getPosts(): Promise<Array<Post>> {
+    async addToCollection(arg0: string, arg1: bigint): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.getPosts();
+                const result = await this.actor.addToCollection(arg0, arg1);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getPosts();
+            const result = await this.actor.addToCollection(arg0, arg1);
             return result;
         }
     }
-    async getQuestionById(arg0: string): Promise<Question> {
+    async createEntry(arg0: string, arg1: string): Promise<Entry> {
         if (this.processError) {
             try {
-                const result = await this.actor.getQuestionById(arg0);
+                const result = await this.actor.createEntry(arg0, arg1);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getQuestionById(arg0);
+            const result = await this.actor.createEntry(arg0, arg1);
             return result;
         }
     }
-    async getQuestionsByCategory(arg0: string): Promise<Array<Question>> {
+    async createUser(arg0: string): Promise<boolean> {
         if (this.processError) {
             try {
-                const result = await this.actor.getQuestionsByCategory(arg0);
+                const result = await this.actor.createUser(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getQuestionsByCategory(arg0);
+            const result = await this.actor.createUser(arg0);
             return result;
         }
     }
-    async getStockSignals(): Promise<Array<StockSignal>> {
+    async deleteEntry(arg0: bigint): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.getStockSignals();
+                const result = await this.actor.deleteEntry(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getStockSignals();
+            const result = await this.actor.deleteEntry(arg0);
             return result;
         }
     }
-    async initialize(): Promise<void> {
+    async getAllEntries(): Promise<Array<Entry>> {
         if (this.processError) {
             try {
-                const result = await this.actor.initialize();
+                const result = await this.actor.getAllEntries();
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.initialize();
+            const result = await this.actor.getAllEntries();
             return result;
         }
     }
-    async likePost(arg0: string): Promise<boolean> {
+    async getAllUsers(): Promise<Array<string>> {
         if (this.processError) {
             try {
-                const result = await this.actor.likePost(arg0);
+                const result = await this.actor.getAllUsers();
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.likePost(arg0);
+            const result = await this.actor.getAllUsers();
             return result;
         }
     }
-    async submitScore(arg0: string, arg1: bigint, arg2: bigint, arg3: string): Promise<boolean> {
+    async getEntry(arg0: bigint): Promise<Entry> {
         if (this.processError) {
             try {
-                const result = await this.actor.submitScore(arg0, arg1, arg2, arg3);
+                const result = await this.actor.getEntry(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.submitScore(arg0, arg1, arg2, arg3);
+            const result = await this.actor.getEntry(arg0);
             return result;
         }
     }
+    async getUser(arg0: string): Promise<Array<bigint>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getUser(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getUser(arg0);
+            return result;
+        }
+    }
+    async getUserEntries(arg0: string): Promise<Array<Entry>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getUserEntries(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getUserEntries(arg0);
+            return result;
+        }
+    }
+    async isPublic(arg0: bigint): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isPublic(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isPublic(arg0);
+            return result;
+        }
+    }
+    async likeEntry(arg0: string, arg1: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.likeEntry(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.likeEntry(arg0, arg1);
+            return result;
+        }
+    }
+    async removeFromCollection(arg0: string, arg1: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.removeFromCollection(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.removeFromCollection(arg0, arg1);
+            return result;
+        }
+    }
+    async saveImage(arg0: string, arg1: string, arg2: ExternalBlob): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.saveImage(arg0, arg1, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg2));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.saveImage(arg0, arg1, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg2));
+            return result;
+        }
+    }
+    async saveVideo(arg0: string, arg1: string, arg2: ExternalBlob): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.saveVideo(arg0, arg1, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg2));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.saveVideo(arg0, arg1, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg2));
+            return result;
+        }
+    }
+    async updateEntry(arg0: bigint, arg1: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateEntry(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateEntry(arg0, arg1);
+            return result;
+        }
+    }
+}
+function from_candid__CaffeineStorageRefillResult_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: __CaffeineStorageRefillResult): _CaffeineStorageRefillResult {
+    return from_candid_record_n5(_uploadFile, _downloadFile, value);
+}
+function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    success: [] | [boolean];
+    topped_up_amount: [] | [bigint];
+}): {
+    success?: boolean;
+    topped_up_amount?: bigint;
+} {
+    return {
+        success: record_opt_to_undefined(from_candid_opt_n6(_uploadFile, _downloadFile, value.success)),
+        topped_up_amount: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.topped_up_amount))
+    };
+}
+async function to_candid_ExternalBlob_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob): Promise<_ExternalBlob> {
+    return await _uploadFile(value);
+}
+function to_candid__CaffeineStorageRefillInformation_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _CaffeineStorageRefillInformation): __CaffeineStorageRefillInformation {
+    return to_candid_record_n3(_uploadFile, _downloadFile, value);
+}
+function to_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _CaffeineStorageRefillInformation | null): [] | [__CaffeineStorageRefillInformation] {
+    return value === null ? candid_none() : candid_some(to_candid__CaffeineStorageRefillInformation_n2(_uploadFile, _downloadFile, value));
+}
+function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    proposed_top_up_amount?: bigint;
+}): {
+    proposed_top_up_amount: [] | [bigint];
+} {
+    return {
+        proposed_top_up_amount: value.proposed_top_up_amount ? candid_some(value.proposed_top_up_amount) : candid_none()
+    };
 }
 export interface CreateActorOptions {
     agent?: Agent;

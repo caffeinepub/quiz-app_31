@@ -10,56 +10,57 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface Category { 'id' : string, 'name' : string }
-export interface LeaderboardEntry {
-  'total' : bigint,
-  'name' : string,
-  'score' : bigint,
-  'timestamp' : Time,
-  'category' : string,
-  'percentage' : number,
-}
-export interface Post {
-  'id' : string,
-  'content' : string,
-  'tags' : Array<string>,
-  'author' : string,
+export interface Entry {
+  'id' : bigint,
+  'data' : string,
   'likes' : bigint,
   'timestamp' : Time,
+  'isPublic' : boolean,
 }
-export interface Question {
-  'id' : string,
-  'categoryId' : string,
-  'text' : string,
-  'correctAnswer' : bigint,
-  'options' : Array<string>,
-}
-export interface StockSignal {
-  'ticker' : string,
-  'timeframe' : string,
-  'name' : string,
-  'entry' : number,
-  'updatedAt' : Time,
-  'target' : number,
-  'strength' : bigint,
-  'stoploss' : number,
-  'signal' : string,
-  'reason' : string,
-}
+export type ExternalBlob = Uint8Array;
 export type Time = bigint;
+export interface _CaffeineStorageCreateCertificateResult {
+  'method' : string,
+  'blob_hash' : string,
+}
+export interface _CaffeineStorageRefillInformation {
+  'proposed_top_up_amount' : [] | [bigint],
+}
+export interface _CaffeineStorageRefillResult {
+  'success' : [] | [boolean],
+  'topped_up_amount' : [] | [bigint],
+}
 export interface _SERVICE {
-  'clearLeaderboard' : ActorMethod<[], undefined>,
-  'createPost' : ActorMethod<[string, string, Array<string>], Post>,
-  'forceReinitialize' : ActorMethod<[], undefined>,
-  'getCategories' : ActorMethod<[], Array<Category>>,
-  'getLeaderboard' : ActorMethod<[], Array<LeaderboardEntry>>,
-  'getPosts' : ActorMethod<[], Array<Post>>,
-  'getQuestionById' : ActorMethod<[string], Question>,
-  'getQuestionsByCategory' : ActorMethod<[string], Array<Question>>,
-  'getStockSignals' : ActorMethod<[], Array<StockSignal>>,
-  'initialize' : ActorMethod<[], undefined>,
-  'likePost' : ActorMethod<[string], boolean>,
-  'submitScore' : ActorMethod<[string, bigint, bigint, string], boolean>,
+  '_caffeineStorageBlobIsLive' : ActorMethod<[Uint8Array], boolean>,
+  '_caffeineStorageBlobsToDelete' : ActorMethod<[], Array<Uint8Array>>,
+  '_caffeineStorageConfirmBlobDeletion' : ActorMethod<
+    [Array<Uint8Array>],
+    undefined
+  >,
+  '_caffeineStorageCreateCertificate' : ActorMethod<
+    [string],
+    _CaffeineStorageCreateCertificateResult
+  >,
+  '_caffeineStorageRefillCashier' : ActorMethod<
+    [[] | [_CaffeineStorageRefillInformation]],
+    _CaffeineStorageRefillResult
+  >,
+  '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
+  'addToCollection' : ActorMethod<[string, bigint], undefined>,
+  'createEntry' : ActorMethod<[string, string], Entry>,
+  'createUser' : ActorMethod<[string], boolean>,
+  'deleteEntry' : ActorMethod<[bigint], undefined>,
+  'getAllEntries' : ActorMethod<[], Array<Entry>>,
+  'getAllUsers' : ActorMethod<[], Array<string>>,
+  'getEntry' : ActorMethod<[bigint], Entry>,
+  'getUser' : ActorMethod<[string], Array<bigint>>,
+  'getUserEntries' : ActorMethod<[string], Array<Entry>>,
+  'isPublic' : ActorMethod<[bigint], boolean>,
+  'likeEntry' : ActorMethod<[string, bigint], undefined>,
+  'removeFromCollection' : ActorMethod<[string, bigint], undefined>,
+  'saveImage' : ActorMethod<[string, string, ExternalBlob], undefined>,
+  'saveVideo' : ActorMethod<[string, string, ExternalBlob], undefined>,
+  'updateEntry' : ActorMethod<[bigint, string], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];
